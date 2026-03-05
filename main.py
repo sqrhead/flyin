@@ -1,11 +1,11 @@
 from renderer import Renderer
 import arcade
 
+# TODO: MapsReader
 # TODO: Pathfinder
 # TODO: Renderer
 # TODO: Graph(points)
 # TODO: Edges(connections)
-# TODO: MapsReader
 
 def main() -> None:
     renderer: Renderer = Renderer()
