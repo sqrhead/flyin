@@ -5,6 +5,7 @@ import arcade
 # TODO: Renderer
 # TODO: Graph(points)
 # TODO: Edges(connections)
+# TODO: MapsReader
 
 def main() -> None:
     renderer: Renderer = Renderer()
