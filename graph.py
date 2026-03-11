@@ -1,19 +1,19 @@
 from enum import Enum
 from typing import Any, Optional
-from graph import *
 
-class NodeType(Enum):
-    START = 0
-    END = 1
-    HUB = 2
-    CONNECTION = 3
+# classes for the graph
+# Node
+class Node:
+    def __init__(self, name: str, x: int, y: int, data: str) -> None:
+        ...
 
-class GraphNode:
-    def __init__(self, type: NodeType, name: str, position: tuple[int, int], metadata: Optional[list[Any]] = None) -> None:
-        self.type = type
-        self.name = name
-        self.position: tuple[int, int] = position
-        self.metadata: Optional[list[Any]] = metadata
+# Edge
+class Edge:
+    def __init__(self, n_from: Node, n_to: Node):
+        self.n_from = n_from
+        self.n_to = n_to
 
+# Graph
 class Graph:
-    ...
+    def __init__(self) -> None:
+        ...
