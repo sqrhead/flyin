@@ -34,9 +34,10 @@ PROBLEMS:
 
 '''
 
+
 class ParseError(Exception):
     def __init__(self, message: str, line: int) -> None:
-        super().__init__(f"line {line}: {message}")
+        super().__init__(f"Line {line}: {message}")
 
 
 @dataclass
@@ -142,7 +143,7 @@ class Parser:
             r'(?P<name>\S+)\s+'
             r'(?P<x>\d+)\s+'
             r'(?P<y>\d+)'
-            r'(?:\s+\[(?P<meta>[^\]]+)\])?'  # optional metadata
+            r'(?:\s+\[(?P<meta>[^\]]+)\])?'
         )
         for tk in hub_tks:
             mt = HUB_PATTERN.match(tk.raw)
@@ -172,7 +173,11 @@ class Parser:
             if not mt:
                 raise ParseError("Invalid connection format!", tk.line)
 
-            rc = RawConn(mt.group('node1'), mt.group('node2'), mt.group('meta'))
+            rc = RawConn(
+                mt.group('node1'),
+                mt.group('node2'),
+                mt.group('meta')
+            )
             self.__raw_map.conns.append(rc)
 
     def _validate(self) -> None:
@@ -180,6 +185,26 @@ class Parser:
         # validate hubs
         # validate conns
         ...
+
+
+# ---------------- ALT -------------------------#
+@dataclass
+class MapData:
+    drones_n: int
+    hubs: dict
+    connections: list
+
+    
+class AltParser:
+    def __init__(self, source):
+        self.source = source
+        self.hub_pattern = re.compile(r'')
+        
+        self.connection_pattern = re.compile()
+# r'^(?P<kind>start_hub|end_hub|hub)\s*:\s*(?P<name>\S+)\s+(?P<x>-?\d+)\s+(?P<y>-?\d+)(?:\s+\[(?P<meta>.*)\])?'   
+# r'^connection\s*:\s*(?P<src>\S+)-(?P<dst>\S+)(?:\s+\[(?P<meta>.*)\])?'
+
+# ---------------- ALT -------------------------#
 
 if __name__ == '__main__':
 
@@ -194,3 +219,4 @@ if __name__ == '__main__':
         raw_map.info()
     except ParseError as pe:
         print(f'{pe}')
+
