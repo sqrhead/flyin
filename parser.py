@@ -52,14 +52,15 @@ class Parser:
     def parse_debug(self) -> None:
         try:
             print(
-                self._process_zone("hub: name 1 1 [color=orange]", 99)
+                self._process_zone("hub: name 1 1 [color=green]", 99)
                 )
             print(
                 self._process_connection(
-                    "connection : name1-name2 [max_link_capacity=12]",
+                    "connection: name1-name2 [max_link_capacity=10]",
                     99
                     )
                 )
+            print("Validate Zones: ", self._validate_zones())
         except ParseError as pe:
             print(f'{pe}')
 
@@ -87,6 +88,7 @@ class Parser:
                     raise ParseError("nb_drones not found as first line", line_nb)
                 connections.append(self._process_connection(line, line_nb))
             else:
+                
                 raise ParseError('ParseError: Line wrong format', line_nb)
 
         return Graph(nb_drones, zones, connections)
@@ -244,11 +246,22 @@ class Parser:
             if line[0].strip().lower() == "max_link_capacity":
                 if line[1].strip().isdigit():
                     max_link_capacity = int(line[1])
+                    print(max_link_capacity)
                     if max_link_capacity < 1:
                         raise ParseError("Metadata: data not valid", line_nb)
+                else:
+                    raise ParseError("Metadata: wrong value", line_nb)
         return Connection(zone_a, zone_b, max_link_capacity)
 
-    def _validate_zones(self) -> bool:
+
+
+    def _validate_zones(self, zones) -> bool:
+        has_start: bool = False
+        has_end: bool = False
+        names: list[str] = [n for n in self.]
+
+        return True
+
         ...
     def _validate_connections(self) -> bool:
         ...

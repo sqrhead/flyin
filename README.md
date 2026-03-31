@@ -13,8 +13,6 @@
 ---- chain of responsability
 ---- builder for graph construction
 
-# End this shit in the next 7 days
-
 # Resources
 -  Regex
 -- https://regexone.com/
