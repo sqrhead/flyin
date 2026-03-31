@@ -12,6 +12,5 @@ def main() -> None:
     renderer.setup()
     renderer.run()
 
-
 if __name__ == '__main__':
     main()
