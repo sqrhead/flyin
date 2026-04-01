@@ -20,6 +20,7 @@ class Zone:
     max_drones: int = 1
     is_start: bool = False
     is_end: bool = False
+    line_nb: int = 0
 
 
 @dataclass
@@ -37,3 +38,10 @@ class Graph:
     nb_drones: int
     zones: dict[str, Zone] = field(default_factory=dict)
     connections: list[Connection] = field(default_factory=list)
+
+    def log_graph(self) -> None:
+        print(f"Number of Drones: {self.nb_drones}")
+        for zone in self.zones:
+            print(f"Zone: {zone}")
+        for connection in self.connections:
+            print(f"Connection: {connection}")

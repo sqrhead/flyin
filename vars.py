@@ -1,5 +1,6 @@
 # File to store some values like colors
 
+# todo: add arcade colors dicts 
 AVB_COLORS = [
     "black",
     "blue",

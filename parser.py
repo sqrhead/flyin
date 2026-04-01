@@ -2,38 +2,9 @@ from __future__ import annotations
 import re
 from typing import Optional
 from graph import Graph, Zone, Connection, ZoneType
-from vars import *
-'''
-Constraints:
-    -- First line must define number of drones [!]
-    -- Any numbers of drones permitted [v]
-    -- One start hub and one end hub []
-    -- Each zone must have a unique name and valid integers coords
-    -- Zones name can have any type of valid chars excluded spaces and dashes
-    -- Connections must link only previous declared zones
-    -- The same connect cant appear twice
-    -- Metadata has to be sintatically valid (ex: name=...)
-    -- Capacity values must be positive integers
-    -- Any other parsing error must stop the program and return a clear error message
-        indicating the line and cause
+from vars import AVB_COLORS
 
-# TODO: Find a guide on how this works better
-# Raw -> Token -> Parser -> Validator -> Result
-'''
-# SCANNER -> TOKENIZER -> PARSER -> RAW__MAP
-'''
-SCANNER :
-    Scans the file, and creates token of the file
-TOKENIZER:
-    Regex of desired format, and Token class
-PARSER:
-    Takes tokens and creates a RawMap, or raise ParserError
-'''
-'''
-PROBLEMS:
-    At the moment i feel like validation is kinda disconnected from the rest of the pipeline
-
-'''
+# TODO: Find a way to put line_nb on the validations funcs 
 
 class ParseError(Exception):
     def __init__(self, message: str, line: int) -> None:
@@ -47,7 +18,12 @@ class Parser:
         with open(self.__filepath, 'r') as file:
             lines = file.readlines()
 
-        return self._process(lines)
+        try:
+            graph = self._process(lines)
+            return graph
+        except ParseError as pe:
+            print(f"{pe}")
+            return None
 
     def parse_debug(self) -> None:
         try:
@@ -60,7 +36,6 @@ class Parser:
                     99
                     )
                 )
-            print("Validate Zones: ", self._validate_zones())
         except ParseError as pe:
             print(f'{pe}')
 
@@ -78,7 +53,7 @@ class Parser:
             if line.startswith('nb_drones'):
                 if nb_drones is not None:
                     raise ParseError('Duplicate nb_drones', line_nb)
-                nb_drones = self._process_drones(line=line)
+                nb_drones = self._process_drones(line=line, line_nb=line_nb)
             elif 'hub' in line:
                 if nb_drones is None:
                     raise ParseError("nb_drones not found as first line", line_nb)
@@ -88,9 +63,9 @@ class Parser:
                     raise ParseError("nb_drones not found as first line", line_nb)
                 connections.append(self._process_connection(line, line_nb))
             else:
-                
                 raise ParseError('ParseError: Line wrong format', line_nb)
-
+        self._validate_zones(zones)
+        self._validate_connections(zones, connections)
         return Graph(nb_drones, zones, connections)
 
 
@@ -144,7 +119,7 @@ class Parser:
 
         # remove suffix (metadata)
         data[1] = data[1].removesuffix(metadata)
-        data = data[1].split()
+        data = data[1].strip().split()
 
         if len(data) != 3:
             raise ParseError(f'Wrong zone format, accepted: {zone_format}', line_nb)
@@ -182,16 +157,16 @@ class Parser:
                 case 'zone':
                     zone_ln = line[1].strip().lower()
                     if not zone_ln in ['normal','blocked','restricted', 'priority']:
-                        raise ParseError('Metadata: Zone not avaible', line_nb)
+                        raise ParseError('Metadata Zone not avaible', line_nb)
                     zone_type = ZoneType(zone_ln)
 
                 case 'max_drones':
                     max_drones_ln = line[1].strip().lower()
                     if not max_drones_ln.isdigit():
-                        raise ParseError('Metadata: MaxDrones not valid integer', line_nb)
+                        raise ParseError('Metadata MaxDrones not valid integer', line_nb)
                     value = int(max_drones_ln)
                     if value <= 0:
-                        raise ParseError('Metadata: MaxDrones <= 0', line_nb)
+                        raise ParseError('Metadata MaxDrones <= 0', line_nb)
                     max_drones = value
 
         return Zone(name, coord_x, coord_y, zone_type, color, max_drones, is_start, is_end)
@@ -203,19 +178,20 @@ class Parser:
         zone_b: str = None
         data = line.strip().split(":", 1)
         if data[0].lower().strip() != "connection":
-            raise ParseError("Connection: wrong tag [connection]", line_nb)
+            raise ParseError("Connectio wrong tag [connection]", line_nb)
         data = data[1].strip()
         ob_index = data.find("[")
-        cb_index = data.find("]") + 1
+        cb_index = data.find("]")
 
         if ob_index > 0 and cb_index == -1:
-            raise ParseError("Metadata: wrong format", line_nb)
+            raise ParseError("Metadata wrong format", line_nb)
 
         if ob_index == -1 and cb_index > 0:
-            raise ParseError("Metadata: wrong format", line_nb)
+            raise ParseError("Metadata wrong format", line_nb)
 
-        if len(data) > cb_index + 2:
-            raise ParseError("Metadata: wrong format", line_nb)
+        
+        if cb_index > -1 and ob_index >= -1 and len(data) > cb_index + 2:
+            raise ParseError("Metadata wrong format", line_nb)
 
         metadata = data[ob_index:cb_index + 1]
         # error here
@@ -223,12 +199,12 @@ class Parser:
             data = data.removesuffix(metadata).strip()
         data = data.split("-", 1)
         if len(data) != 2:
-            raise ParseError("Connection: wrong format", line_nb)
+            raise ParseError("Connection wrong format", line_nb)
 
         if " " in data[0].strip():
-            raise ParseError("Connection: name wrong", line_nb)
+            raise ParseError("Connection name wrong", line_nb)
         if " " in data[1].strip():
-            raise ParseError("Connection: name wrong", line_nb)
+            raise ParseError("Connection name wrong", line_nb)
 
         zone_a = data[0]
         zone_b = data[1]
@@ -238,37 +214,56 @@ class Parser:
 
         for line in metadata:
             if not "=" in line:
-                raise ParseError("Metadata: wrong format", line_nb)
+                raise ParseError("Metadata wrong format", line_nb)
             line = line.split("=")
             if len(line) != 2:
-                raise ParseError("Metadata: wrong format", line_nb)
+                raise ParseError("Metadata wrong format", line_nb)
 
             if line[0].strip().lower() == "max_link_capacity":
                 if line[1].strip().isdigit():
                     max_link_capacity = int(line[1])
-                    print(max_link_capacity)
                     if max_link_capacity < 1:
                         raise ParseError("Metadata: data not valid", line_nb)
                 else:
-                    raise ParseError("Metadata: wrong value", line_nb)
+                    raise ParseError("Metadata wrong value", line_nb)
         return Connection(zone_a, zone_b, max_link_capacity)
 
 
-
-    def _validate_zones(self, zones) -> bool:
+    def _validate_zones(self, zones: list[Zone]) -> None:
         has_start: bool = False
         has_end: bool = False
-        names: list[str] = [n for n in self.]
+        names: list[str] = []
+        
+        for zone in zones:
+            if zone.name in names:
+                raise ParseError("Zone not unique name", 0)
+            names.append(zone.name)
+            if zone.is_start:
+                has_start = True
+            if zone.is_end:
+                has_end = True
+        if not has_end or not has_start:
+            raise ParseError("Zone not start/end point", 0)
 
-        return True
+    def _validate_connections(self, zones: list[Zone], connections: list[Connection]) -> bool:
+        prev_connections = set()
+        zone_names = {z.name for z in zones}
 
-        ...
-    def _validate_connections(self) -> bool:
-        ...
-
+        for conn in connections:
+            if conn.zone_a not in zone_names or conn.zone_b not in zone_names:
+                raise ParseError(f"Connection links doesnt exist: {conn.zone_a} - {conn.zone_b}", 0)
+            if conn.zone_a == conn.zone_b:
+                raise ParseError(f"Connection loop -> {conn.zone_a} - {conn.zone_b}", 0)
+            pair = tuple(sorted((conn.zone_a, conn.zone_b)))
+            if pair in prev_connections:
+                raise ParseError(f"Connection {conn.zone_a} - {conn.zone_b} already exists", 0)
+            prev_connections.add(pair)
 
 # todo : zone name bug -> no space accepted after tag
 if __name__ == '__main__':
-    parser = Parser('ok')
-    parser.parse_debug()
+    parser = Parser('linear_path.txt')
+    
+    graph: Graph = parser.parse()
+    if graph:
+        graph.log_graph()
 
