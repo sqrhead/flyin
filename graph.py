@@ -21,9 +21,10 @@ class Zone:
     is_start: bool = False
     is_end: bool = False
     line_nb: int = 0 # used to print ln for validation
-    drone: list[Drone] = []
+    drone: list[Drone] = [] # to keep info on drones
 
 
+# should i put a drone list here too for the waiting drones 
 @dataclass
 class Connection:
     zone_a: str
