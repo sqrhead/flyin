@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
-
+from drone import Drone 
 
 class ZoneType(Enum):
     NORMAL = 'normal'
@@ -20,7 +20,8 @@ class Zone:
     max_drones: int = 1
     is_start: bool = False
     is_end: bool = False
-    line_nb: int = 0
+    line_nb: int = 0 # used to print ln for validation
+    drone: list[Drone] = []
 
 
 @dataclass
@@ -45,3 +46,27 @@ class Graph:
             print(f"Zone: {zone}")
         for connection in self.connections:
             print(f"Connection: {connection}")
+    
+    def get_start(self) -> Zone:
+        for zone in self.zones:
+            if zone.is_start:
+                return zone
+        raise ValueError("Zone: start not found")
+
+    def get_end(self) -> Zone:
+        for zone in self.zones:
+            if zone.is_end:
+                return zone
+        raise ValueError("Zone: end not found")
+    
+    def get_zone_by_name(self, name: str) -> Zone:
+        for zone in self.zones:
+            if zone.name == name:
+                return zone
+    
+    def get_current_connections(self, curr_zone: Zone) -> list[Connection]:
+        conns = []
+        for conn in self.connections:
+            if curr_zone.name == conn.zone_a:
+                conns.append(conn)
+        return conns

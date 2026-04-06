@@ -5,6 +5,7 @@ from graph import Graph, Zone, Connection, ZoneType
 from vars import AVB_COLORS
 
 # TODO: Find a way to put line_nb on the validations funcs 
+# ◦ The connection syntax forbids dashes in zone names.
 
 class ParseError(Exception):
     def __init__(self, message: str, line: int) -> None:
@@ -258,12 +259,4 @@ class Parser:
             if pair in prev_connections:
                 raise ParseError(f"Connection {conn.zone_a} - {conn.zone_b} already exists", 0)
             prev_connections.add(pair)
-
-# todo : zone name bug -> no space accepted after tag
-if __name__ == '__main__':
-    parser = Parser('linear_path.txt')
-    
-    graph: Graph = parser.parse()
-    if graph:
-        graph.log_graph()
 

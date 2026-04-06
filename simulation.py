@@ -1,5 +1,8 @@
 # Simulation file
 
+class Drone:
+    def __init__(self, id: int): 
+        self.id = "ID_" + str(id)
 
 class Simulation:
     def __init__(self) -> None:
