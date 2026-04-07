@@ -4,7 +4,7 @@ import arcade
 WINDOW_W = 600
 WINDOW_H = 400
 WINDOW_T = 'Fly In'
-BACKGROUND_COLOR = arcade.color.ZAFFRE
+BACKGROUND_COLOR = arcade.color.ORANGE_PEEL
 
 # Path Node Colors
 COLOR_GOAL = arcade.color.GREEN
@@ -17,12 +17,12 @@ class Renderer(arcade.Window):
         super().__init__(WINDOW_W, WINDOW_H, WINDOW_T)
         self.background_color = BACKGROUND_COLOR
         self.top_text: list[arcade.Text] = [
-            arcade.Text('Fly In', 1, WINDOW_H - 16, arcade.color.WHITE, 14),
-            arcade.Text('Fly In', 96, WINDOW_H - 16, arcade.color.WHITE, 14),
-            arcade.Text('Fly In', 96 * 2, WINDOW_H - 16, arcade.color.WHITE, 14),
-            arcade.Text('Fly In', 96 * 3, WINDOW_H - 16, arcade.color.WHITE_SMOKE, 14),
-            arcade.Text('Fly In', 96 * 4, WINDOW_H - 16, arcade.color.WHITE_SMOKE, 14),
-            arcade.Text('Fly In', 96 * 5, WINDOW_H - 16, arcade.color.WHITE_SMOKE, 14)
+            arcade.Text('Fly In', 1, WINDOW_H - 20, arcade.color.WHITE, 22),
+            arcade.Text('Fly In', 96, WINDOW_H - 20, arcade.color.WHITE, 22),
+            arcade.Text('Fly In', 96 * 2, WINDOW_H - 20, arcade.color.WHITE, 22),
+            arcade.Text('Fly In', 96 * 3, WINDOW_H - 20, arcade.color.WHITE_SMOKE, 22),
+            arcade.Text('Fly In', 96 * 4, WINDOW_H - 20, arcade.color.WHITE_SMOKE, 22),
+            arcade.Text('Fly In', 96 * 5, WINDOW_H - 20, arcade.color.WHITE_SMOKE, 22)
         ]
         self.animation_speed: int = 100
 
@@ -36,11 +36,11 @@ class Renderer(arcade.Window):
         for txt in self.top_text:
             txt.draw()
         arcade.draw_line(0, WINDOW_H - 32, WINDOW_W, WINDOW_H - 32, arcade.color.WHITE, 2)
-        #
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.ESCAPE:
             arcade.close_window()
+
         if symbol == arcade.key.SPACE:
             self.animation_speed += 20
             if self.animation_speed > 200:

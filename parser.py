@@ -4,7 +4,7 @@ from typing import Optional
 from graph import Graph, Zone, Connection, ZoneType
 from vars import AVB_COLORS
 
-# TODO: Find a way to put line_nb on the validations funcs 
+# TODO: Find a way to put line_nb on the validations funcs
 # ◦ The connection syntax forbids dashes in zone names.
 
 class ParseError(Exception):
@@ -190,7 +190,7 @@ class Parser:
         if ob_index == -1 and cb_index > 0:
             raise ParseError("Metadata wrong format", line_nb)
 
-        
+
         if cb_index > -1 and ob_index >= -1 and len(data) > cb_index + 2:
             raise ParseError("Metadata wrong format", line_nb)
 
@@ -234,7 +234,7 @@ class Parser:
         has_start: bool = False
         has_end: bool = False
         names: list[str] = []
-        
+
         for zone in zones:
             if zone.name in names:
                 raise ParseError("Zone not unique name", 0)

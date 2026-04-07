@@ -6,6 +6,7 @@ class DroneStatus(Enum):
     REACHED = 2
 
 class Drone:
-    def __init__(self, id: int): 
-        self.id = "ID_" + str(id)
+    def __init__(self, id: int):
+        self.id: str = "ID_" + str(id)
         self.status: DroneStatus = DroneStatus.WAIT
+        self.path: list = []
