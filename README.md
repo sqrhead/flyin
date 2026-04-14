@@ -1,7 +1,7 @@
 # flyin
 
 ## external modules
-- arcade (graphic library)
+- arcade (graphic library) \\ some weird behaviour in with this library
 
 ## to learn
 - graph adjacency list
@@ -16,7 +16,8 @@
 # Resources
 -  Regex
 -- https://regexone.com/
-
+# TODO:
+- check parser.py for small improvements\fixes
 ###########################
 # COLORS
 black

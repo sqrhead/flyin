@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
 from drone import Drone
 
 class ZoneType(Enum):
@@ -20,9 +19,7 @@ class Zone:
         self.max_drones = max_drones
         self.is_start = is_start
         self.is_end = is_end
-        self.drones: list[Drone] = []
 
-# should i put a drone list here too for the waiting drones
 @dataclass
 class Connection:
     zone_a: str

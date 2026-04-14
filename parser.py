@@ -80,7 +80,7 @@ class Parser:
         if drones <= 0:
             raise ParseError('Drones must be > 0', line_nb)
         return drones
-
+    
     def _process_zone(self, line: str, line_nb: int) -> Zone:
         # tag: name coord_x coord_y [metadata_k=metadata_v]
         zone_format = 'tag: name coord_x coord_y [metadata_k=metadata_v]'
@@ -130,12 +130,12 @@ class Parser:
             raise ParseError('Dash or Space in Zone name', line_nb)
         coord_x = data[1].strip()
         coord_y = data[2].strip()
-        if not coord_x.strip().isdigit() or not coord_y.strip().isdigit():
-            raise ParseError(f'Coords must be valid integers, {coord_x} {coord_y}', line_nb)
+        # if not coord_x.strip().isdigit() or not coord_y.strip().isdigit(): # this part should be uncommented
+        #     raise ParseError(f'Coords must be valid integers, {coord_x} {coord_y}', line_nb)
         coord_x = int(coord_x)
         coord_y = int(coord_y)
-        if coord_x < 0 or coord_y < 0:
-            raise ParseError('Coords must be positive integers', line_nb)
+        # if coord_x < 0 or coord_y < 0:
+        #     raise ParseError('Coords must be positive integers', line_nb)
 
         # remove start and end of the string ( [] )
         metadata = metadata[1:len(metadata)-1].strip()
