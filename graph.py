@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from drone import Drone
 
 class ZoneType(Enum):
     NORMAL = 'normal'
@@ -38,7 +37,7 @@ class Graph:
         for zone in self.zones:
             print(f"Zone: {zone.name} {zone.x} {zone.y}")
         for connection in self.connections:
-            print(f"Connection: {connection}")
+            print(f"Connection: {connection.zone_a} to {connection.zone_b}")
 
     def get_start(self) -> Zone:
         for zone in self.zones:

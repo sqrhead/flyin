@@ -1,0 +1,23 @@
+# Medium: Bidirectional backtrack needed
+# Drones must go through a narrow bottleneck, some will need to backtrack
+# to a waiting area to let others pass through
+nb_drones: 5
+
+start_hub: start 0 0 [color=green max_drones=5]
+hub: waiting_a 1 1 [color=blue max_drones=3]
+hub: waiting_b 1 -1 [color=blue max_drones=3]
+hub: bottleneck 2 0 [color=orange max_drones=1]
+hub: relay 3 0 [color=yellow max_drones=2]
+end_hub: goal 4 0 [color=green max_drones=5]
+
+connection: start-waiting_a
+connection: start-waiting_b
+connection: waiting_a-bottleneck
+connection: waiting_b-bottleneck
+connection: bottleneck-relay
+connection: relay-goal
+
+# The only way through is bottleneck (max 1 drone at a time)
+# Drones coming from waiting_a or waiting_b must take turns
+# If your algorithm doesn't support backtracking (waiting_a -> start -> waiting_b),
+# some drones may deadlock at the bottleneck entrance

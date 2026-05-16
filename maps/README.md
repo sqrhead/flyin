@@ -7,7 +7,7 @@ This collection contains carefully crafted maps designed to test different aspec
 ### 🟢 Easy Maps
 **Target**: Beginners, basic algorithm testing
 - `01_linear_path.txt` - Simple linear progression (2 drones)
-- `02_simple_fork.txt` - Basic path splitting (3 drones)
+- `02_simple_fork.txt` - Basic path splitting (3 drones)  
 - `03_basic_capacity.txt` - Introduction to capacity constraints (4 drones)
 
 ### 🟡 Medium Maps
@@ -35,7 +35,7 @@ This collection contains carefully crafted maps designed to test different aspec
 ### 🎯 **Dead End Traps**
 Maps contain paths that lead nowhere, testing if algorithms can backtrack or avoid getting stuck.
 
-### 🔄 **Circular Loops**
+### 🔄 **Circular Loops** 
 Cycles in the graph that can cause infinite loops in poorly designed algorithms.
 
 ### ⚡ **Capacity Constraints**

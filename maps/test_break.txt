@@ -1,0 +1,34 @@
+# Fly-in Break Test Map
+# Testing parser and simulation logic
+nb_drones: 10
+
+# Zones with varied metadata and spacing/formatting
+start_hub: StartHub 0 0 [color=green max_drones=10]
+end_hub:   EndGoal  10 10 [color=yellow max_drones=10]
+
+# Normal zone with capacity > 1
+hub: alpha 2 2 [max_drones=3 color=blue]
+
+# Restricted zone (2 turns)
+hub: beta 4 4 [zone=restricted color=red]
+
+# Priority zone (1 turn, preferred)
+hub: gamma 2 6 [zone=priority color=lime]
+
+# Blocked zone (Inaccessible)
+hub: delta 5 5 [zone=blocked color=blue]
+
+# Extreme capacity zone
+hub: epsilon 8 8 [max_drones=5 zone=normal]
+
+# Connections testing link capacities and restricted paths
+connection: StartHub-alpha [max_link_capacity=2]
+connection: StartHub-gamma [max_link_capacity=5]
+connection: alpha-beta [max_link_capacity=1]
+connection: gamma-epsilon [max_link_capacity=3]
+connection: beta-EndGoal [max_link_capacity=2]
+connection: epsilon-EndGoal [max_link_capacity=1]
+connection: alpha-gamma [max_link_capacity=2]
+
+# Additional connection to a blocked zone (should never be used)
+connection: StartHub-delta [max_link_capacity=1]

@@ -1,7 +1,8 @@
 import arcade
+
 # File to store some values like colors
 
-# todo: add arcade colors dicts 
+# todo: add arcade colors dicts
 AVB_COLORS = [
     "black",
     "blue",
@@ -24,7 +25,7 @@ AVB_COLORS = [
 
 ARC_COLORS = {
     "black": arcade.color.BLACK,
-    "blue": arcade.color.BLUE,
+    "blue": arcade.color.BLUEBONNET,
     "brown": arcade.color.BROWN,
     "crimson": arcade.color.CRIMSON,
     "cyan": arcade.color.CYAN,
@@ -40,5 +41,4 @@ ARC_COLORS = {
     "red": arcade.color.RED,
     "violet": arcade.color.VIOLET,
     "yellow": arcade.color.YELLOW,
-
 }
