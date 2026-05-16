@@ -37,7 +37,7 @@ ARC_COLORS = {
     "maroon": arcade.color.MAROON,
     "orange": arcade.color.ORANGE,
     "purple": arcade.color.PURPLE,
-    "rainbow": ...,
+    "rainbow": arcade.color.ALLOY_ORANGE,
     "red": arcade.color.RED,
     "violet": arcade.color.VIOLET,
     "yellow": arcade.color.YELLOW,

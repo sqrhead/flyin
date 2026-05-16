@@ -20,15 +20,18 @@ class Parser:
         self.__filepath = filepath
 
     def parse(self) -> Graph:
-        with open(self.__filepath, "r") as file:
-            lines = file.readlines()
-
+        lines = []
+        try:
+            with open(self.__filepath, "r") as file:
+                lines = file.readlines()
+        except FileNotFoundError:
+            raise ParseError("Error: File name is wrong", 0)
         try:
             graph = self._process(lines)
             return graph
         except ParseError as pe:
             print(f"{pe}")
-            return None
+            return Graph(-1, {}, [])
 
     def parse_debug(self) -> None:
         try:

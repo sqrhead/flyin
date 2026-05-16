@@ -1,4 +1,6 @@
+import os
 import sys
+from cmath import e
 
 import arcade
 
@@ -12,12 +14,15 @@ from simulation import Simulation
 
 def main() -> None:
     # maps/challenger/01_the_impossible_dream.txt
-    parser: Parser = Parser("maps/easy/01_linear_path.txt")
+    parser: Parser = Parser("maps/challenger/01_the_impossible_dream.txt")
     graph: Graph = parser.parse()
     if not graph:
         raise SystemExit("Graph not found")
     simulation: Simulation = Simulation(graph=graph)
-    arcade.run()
+    try:
+        arcade.run()
+    finally:
+        os._exit(0)
 
 
 if __name__ == "__main__":

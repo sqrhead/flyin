@@ -48,6 +48,13 @@ class Renderer(arcade.Window):
         self.simulation_speed = 2
         self.current_sim_turn = 0
 
+        self.text_space: arcade.Text = arcade.Text(
+            "Press SPACE to restart", 10, WINDOW_HEIGHT - 20, arcade.color.WHITE, 20
+        )
+        self.text_turn: arcade.Text = arcade.Text(
+            "OK", 10, WINDOW_HEIGHT - 42, arcade.color.WHITE, 20
+        )
+
         # COORDS AND PADDING FOR THE ZONES BASED ON WINDOW SIZE
         coords_x = [z.x for z in self.graph.zones]
         coords_y = [z.y for z in self.graph.zones]
@@ -85,6 +92,11 @@ class Renderer(arcade.Window):
 
     def on_draw(self) -> None:
         self.clear()
+
+        self.text_space.draw()
+        self.text_turn.text = f"Turn number = {self.current_sim_turn}"
+        self.text_turn.draw()
+
         for sx, sy, ex, ey in self.conns_info:
             arcade.draw_line(sx, sy, ex, ey, arcade.color.GHOST_WHITE, LINE_WIDTH)
         for zone in self.zones_info:
