@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 
+
 class ZoneType(Enum):
     NORMAL = 'normal'
     BLOCKED = 'blocked'
@@ -9,7 +10,12 @@ class ZoneType(Enum):
 
 
 class Zone:
-    def __init__(self, name, x, y, zone_type=ZoneType.NORMAL, color=None, max_drones=1, is_start=False, is_end=False):
+    def __init__(
+            self,
+            name,
+            x, y, zone_type=ZoneType.NORMAL,
+            color=None, max_drones=1,
+            is_start=False, is_end=False):
         self.name = name
         self.x = x
         self.y = y
@@ -18,6 +24,7 @@ class Zone:
         self.max_drones = max_drones
         self.is_start = is_start
         self.is_end = is_end
+
 
 @dataclass
 class Connection:

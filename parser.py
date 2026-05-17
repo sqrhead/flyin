@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-import re
 from typing import Optional
 
 from graph import Connection, Graph, Zone, ZoneType
 from vars import AVB_COLORS
-
-# TODO: Find a way to put line_nb on the validations funcs
-# ◦ The connection syntax forbids dashes in zone names.
 
 
 class ParseError(Exception):
@@ -65,11 +61,15 @@ class Parser:
                 or line.startswith("hub:")
             ):
                 if nb_drones is None:
-                    raise ParseError("nb_drones not found as first line", line_nb)
+                    raise ParseError(
+                        "nb_drones not found as first line", line_nb
+                        )
                 zones.append(self._process_zone(line, line_nb))
             elif line.startswith("connection"):
                 if nb_drones is None:
-                    raise ParseError("nb_drones not found as first line", line_nb)
+                    raise ParseError(
+                        "nb_drones not found as first line", line_nb
+                        )
                 connections.append(self._process_connection(line, line_nb))
             else:
                 raise ParseError("ParseError: Line wrong format", line_nb)
@@ -105,22 +105,22 @@ class Parser:
         # Check if is end or start
         if tag in ["start_hub", "hub", "end_hub"]:
             if tag == "start_hub":
-                if is_start == True:
+                if is_start is True:
                     raise ParseError("Duplicate Start Hub", line_nb)
                 is_start = True
             if tag == "end_hub":
-                if is_end == True:
+                if is_end is True:
                     raise ParseError("Duplicate End Hub", line_nb)
                 is_end = True
         else:
             raise ParseError("Invalid zone tag", line_nb)
 
-        if not "[" in data[1] or not "]" in data[1]:
+        if "[" not in data[1] or "]" not in data[1]:
             raise ParseError("Metadata: missing brackets", line_nb)
         # find metadata indexes
         ob_index = data[1].find("[")
         cb_index = data[1].find("]")
-        metadata = data[1][ob_index : cb_index + 1]
+        metadata = data[1][ob_index: cb_index + 1]
 
         if len(data[1]) > cb_index + 2:
             raise ParseError("Data after metadata", line_nb)
@@ -130,7 +130,8 @@ class Parser:
         data = data[1].strip().split()
 
         if len(data) != 3:
-            raise ParseError(f"Wrong zone format, accepted: {zone_format}", line_nb)
+            raise ParseError(
+                f"Wrong zone format, accepted: {zone_format}", line_nb)
 
         name = data[0].strip()
         if " " in name or "-" in name:
@@ -146,12 +147,13 @@ class Parser:
         #     raise ParseError('Coords must be positive integers', line_nb)
 
         # remove start and end of the string ( [] )
-        metadata = metadata[1 : len(metadata) - 1].strip()
+        metadata = metadata[1: len(metadata) - 1].strip()
         metadata = metadata.split()
         # validate and set metadata
         for line in metadata:
-            if not "=" in line:
-                raise ParseError("Wrong metadata format, <key>=<value>", line_nb)
+            if "=" not in line:
+                raise ParseError(
+                    "Wrong metadata format, <key>=<value>", line_nb)
             line = line.split("=", 1)
             if len(line) != 2:
                 raise ParseError(f"{line} : wrong metadata format", line_nb)
@@ -159,13 +161,15 @@ class Parser:
             match line[0].strip().lower():
                 case "color":
                     color_ln = line[1].strip().lower()
-                    if not color_ln in AVB_COLORS:
-                        raise ParseError("Metadata: Color not avaible", line_nb)
+                    if color_ln not in AVB_COLORS:
+                        raise ParseError(
+                            "Metadata: Color not avaible", line_nb)
                     color = color_ln
 
                 case "zone":
                     zone_ln = line[1].strip().lower()
-                    if not zone_ln in ["normal", "blocked", "restricted", "priority"]:
+                    if zone_ln not in [
+                            "normal", "blocked", "restricted", "priority"]:
                         raise ParseError("Metadata Zone not avaible", line_nb)
                     zone_type = ZoneType(zone_ln)
 
@@ -181,7 +185,10 @@ class Parser:
                     max_drones = value
 
         return Zone(
-            name, coord_x, coord_y, zone_type, color, max_drones, is_start, is_end
+            name,
+            coord_x, coord_y,
+            zone_type, color, max_drones,
+            is_start, is_end
         )
 
     # Error: something after name is considered part of the name
@@ -205,7 +212,7 @@ class Parser:
         if cb_index > -1 and ob_index >= -1 and len(data) > cb_index + 2:
             raise ParseError("Metadata wrong format", line_nb)
 
-        metadata = data[ob_index : cb_index + 1]
+        metadata = data[ob_index: cb_index + 1]
         # error here
         if metadata:
             data = data.removesuffix(metadata).strip()
@@ -221,11 +228,11 @@ class Parser:
         zone_a = data[0]
         zone_b = data[1]
 
-        metadata = metadata[1 : len(metadata) - 1]
+        metadata = metadata[1: len(metadata) - 1]
         metadata = metadata.split()
 
         for line in metadata:
-            if not "=" in line:
+            if "=" not in line:
                 raise ParseError("Metadata wrong format", line_nb)
             line = line.split("=")
             if len(line) != 2:
@@ -265,13 +272,17 @@ class Parser:
         for conn in connections:
             if conn.zone_a not in zone_names or conn.zone_b not in zone_names:
                 raise ParseError(
-                    f"Connection links doesnt exist: {conn.zone_a} - {conn.zone_b}", 0
+                    f"Connection links doesnt exist: {conn.zone_a} - "
+                    f"{conn.zone_b}", 0
                 )
             if conn.zone_a == conn.zone_b:
-                raise ParseError(f"Connection loop -> {conn.zone_a} - {conn.zone_b}", 0)
+                raise ParseError(
+                    f"Connection loop -> {conn.zone_a} - "
+                    f"{conn.zone_b}", 0)
             pair = tuple(sorted((conn.zone_a, conn.zone_b)))
             if pair in prev_connections:
                 raise ParseError(
-                    f"Connection {conn.zone_a} - {conn.zone_b} already exists", 0
+                    f"Connection {conn.zone_a} - "
+                    f"{conn.zone_b} already exists", 0
                 )
             prev_connections.add(pair)

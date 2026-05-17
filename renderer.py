@@ -1,5 +1,3 @@
-import sys
-
 import arcade
 
 from drone import Drone
@@ -49,9 +47,12 @@ class Renderer(arcade.Window):
         self.current_sim_turn = 0
 
         self.text_space: arcade.Text = arcade.Text(
-            "Press SPACE to restart", 10, WINDOW_HEIGHT - 20, arcade.color.WHITE, 20
+            "Press SPACE to restart",
+            10, WINDOW_HEIGHT - 20,
+            arcade.color.WHITE, 20
         )
-        self.text_turn: arcade.Text = arcade.Text(
+        self.text_turn: arcade.Text
+        self.text_turn = arcade.Text(
             "OK", 10, WINDOW_HEIGHT - 42, arcade.color.WHITE, 20
         )
 
@@ -74,7 +75,10 @@ class Renderer(arcade.Window):
             screen_y = (zone.y - min_y) * scale_y + (WINDOW_HEIGHT * 0.1)
 
             self.pos_map[zone.name] = (screen_x, screen_y)
-            rect = arcade.Rect(0, 0, 0, 0, ZONE_SIZE, ZONE_SIZE, screen_x, screen_y)
+            rect = arcade.Rect(
+                0, 0, 0, 0,
+                ZONE_SIZE, ZONE_SIZE,
+                screen_x, screen_y)
             self.zones_info.append((rect, clr))
 
         for conn in self.graph.connections:
@@ -98,14 +102,20 @@ class Renderer(arcade.Window):
         self.text_turn.draw()
 
         for sx, sy, ex, ey in self.conns_info:
-            arcade.draw_line(sx, sy, ex, ey, arcade.color.GHOST_WHITE, LINE_WIDTH)
+            arcade.draw_line(
+                sx, sy, ex, ey,
+                arcade.color.GHOST_WHITE,
+                LINE_WIDTH)
         for zone in self.zones_info:
             arcade.draw_rect_filled(zone[0], zone[1])
 
         # Draw Drones
         for drone in self.drones:
             current_step = next(
-                (item for item, turn in drone.path if turn == self.current_sim_turn),
+                (
+                    item
+                    for item, turn in drone.path
+                    if turn == self.current_sim_turn),
                 None,
             )
             if current_step:
@@ -126,34 +136,6 @@ class Renderer(arcade.Window):
                         mid_x = (p1[0] + p2[0]) / 2
                         mid_y = (p1[1] + p2[1]) / 2
                         self.draw_drone(mid_x, mid_y, drone.color)
-            # prev_pos = None
-            # curr_pos = None
-            # is_done = self.current_sim_turn > drone.path[-1][1]
-
-            # for item, turn in drone.path:
-            #     if turn <= self.current_sim_turn:
-            #         prev_pos = curr_pos
-            #         if hasattr(item, "name"):
-            #             # it's a Zone
-            #             if item.name in self.pos_map:
-            #                 curr_pos = self.pos_map[item.name]
-            #         else:
-            #             # it's a connection string like "gate3-restricted_tunnel1"
-            #             parts = item.split("-", 1)
-            #             if parts[0] in self.pos_map and parts[1] in self.pos_map:
-            #                 ax, ay = self.pos_map[parts[0]]
-            #                 bx, by = self.pos_map[parts[1]]
-            #                 # drone is halfway along the connection
-            #                 curr_pos = ((ax + bx) / 2, (ay + by) / 2)
-
-            # if curr_pos:
-            #     if prev_pos and not is_done:
-            #         t = self.turn_timer / self.simulation_speed
-            #         sx = prev_pos[0] + (curr_pos[0] - prev_pos[0]) * t
-            #         sy = prev_pos[1] + (curr_pos[1] - prev_pos[1]) * t
-            #     else:
-            #         sx, sy = curr_pos
-            #     self.draw_drone(sx, sy)
 
     def on_update(self, delta_time):
         self.color_counter -= delta_time
@@ -184,12 +166,12 @@ class Renderer(arcade.Window):
         return super().on_update(delta_time)
 
     def draw_drone(self, x: float, y: float, color) -> None:
-        # 1. Draw a white background circle slightly larger than the drone
-        # This acts as a 'stroke' so the drone never disappears into a zone
-        arcade.draw_circle_filled(x, y, self.outer_radius * 0.6, arcade.color.WHITE)
-
-        # 2. Draw your existing animated outline using the drone's unique color
-        arcade.draw_circle_outline(x, y, self.outer_radius, color, 6, self.drone_rot, 6)
-
-        # 3. Draw the center dot
+        arcade.draw_circle_filled(
+            x, y,
+            self.outer_radius * 0.6,
+            arcade.color.WHITE)
+        arcade.draw_circle_outline(
+            x, y,
+            self.outer_radius,
+            color, 6, self.drone_rot, 6)
         arcade.draw_circle_filled(x, y, 5, color)

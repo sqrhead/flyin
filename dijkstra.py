@@ -47,17 +47,23 @@ class Dijkstra:
                 move_cost = 2 if is_restricted else 1
                 arrival_turn = turn + move_cost
 
-                if table.get((adj.name, arrival_turn), 0) < adj.max_drones:
+                if table.get(
+                    (adj.name, arrival_turn), 0
+                        ) < adj.max_drones:
                     new_schedule = list(schedule)
                     if is_restricted:
                         link_id = f"{name}-{adj.name}"
-                        if table.get((link_id, turn + 1), 0) >= conn.max_link_capacity:
+                        if table.get(
+                            (link_id, turn + 1), 0
+                                ) >= conn.max_link_capacity:
                             continue
                         new_schedule.append((link_id, turn + 1))
                     new_schedule.append((adj, arrival_turn))
 
                     weight = (
-                        0.9 if adj.zone_type == ZoneType.PRIORITY else float(move_cost)
+                        0.9
+                        if adj.zone_type == ZoneType.PRIORITY
+                        else float(move_cost)
                     )
                     self._count += 1
                     heapq.heappush(

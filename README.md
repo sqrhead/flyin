@@ -1,5 +1,5 @@
 # flyin
-
+python -u main.py > output.txt 2>&1
 ## external modules
 - arcade (graphic library) \\ some weird behaviour in with this library
 
