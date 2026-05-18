@@ -1,4 +1,6 @@
 from typing import Any, Optional
+
+
 class Drone:
     def __init__(self, id: int, color: Optional[Any] = None) -> None:
         self.id: str = "D" + str(id + 1)

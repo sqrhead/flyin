@@ -6,7 +6,6 @@ from graph import Graph, Zone, ZoneType
 
 class Dijkstra:
 
-
     def __init__(self) -> None:
         """Initialize the Dijkstra scheduler."""
         self._count: int = 0
@@ -92,10 +91,11 @@ class Dijkstra:
 
                 new_schedule = list(schedule)
 
-                # Check link capacity for all connections (not just restricted).
                 link_id = f"{name}-{adj.name}"
                 link_turn = turn + 1
-                if table.get((link_id, link_turn), 0) >= conn.max_link_capacity:
+                if table.get(
+                    (link_id, link_turn), 0
+                        ) >= conn.max_link_capacity:
                     continue
 
                 if is_restricted:
@@ -123,4 +123,3 @@ class Dijkstra:
                 )
 
         return []
-

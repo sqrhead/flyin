@@ -182,7 +182,6 @@ class Renderer(arcade.Window):
 
         super().on_update(delta_time)
 
-
     def draw_drone(self, x: float, y: float, color: Any) -> None:
         """Draw a single drone at the given screen coordinates.
 
@@ -200,4 +199,3 @@ class Renderer(arcade.Window):
             self.outer_radius,
             color, 6, self.drone_rot, 6)
         arcade.draw_circle_filled(x, y, 5, color)
-

@@ -1,12 +1,7 @@
-# ==============================================================================
-#                      42 FLY-IN DRONE SIMULATOR MAKEFILE
-# ==============================================================================
-
 PYTHON       := python3
 VENV_DIR     := .venv
 MAIN_SCRIPT  := main.py
 
-# Detect Operating System and Shell Profiles
 ifeq ($(OS),Windows_NT)
     ifneq ($(findstring /,$(SHELL)),)
         VENV_BIN    := $(VENV_DIR)/Scripts

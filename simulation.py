@@ -107,7 +107,6 @@ class Simulation:
                     continue
 
                 if hasattr(step, "name"):
-                    # Skip if drone is waiting (same zone as the previous turn).
                     if (hasattr(prev_step, "name")
                             and prev_step.name == step.name):
                         continue

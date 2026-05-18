@@ -49,7 +49,7 @@ class Parser:
             return graph
         except ParseError as pe:
             print(f"{pe}")
-            return Graph(-1, [], []) # possible problem here
+            return Graph(-1, [], [])
 
     def parse_debug(self) -> None:
         """Run a quick debug parse of hardcoded example lines."""
@@ -173,7 +173,6 @@ class Parser:
 
         rest = data[1]
 
-        # Metadata brackets are optional — handle both cases.
         has_bracket = "[" in rest or "]" in rest
         if has_bracket:
             if "[" not in rest or "]" not in rest:
@@ -211,18 +210,15 @@ class Parser:
                 line_nb
             )
 
-        # Parse metadata content (strip the surrounding brackets).
         metadata_content = metadata_raw[1:len(metadata_raw) - 1].strip()
+
         for token in metadata_content.split():
             if "=" not in token:
                 raise ParseError(
-                    "Wrong metadata format, <key>=<value>", line_nb
+                    f"Wrong metadata format '{token}', "
+                    f"expected key=value", line_nb
                 )
             parts = token.split("=", 1)
-            if len(parts) != 2:
-                raise ParseError(
-                    f"{token} : wrong metadata format", line_nb
-                )
             key = parts[0].strip().lower()
             value = parts[1].strip()
 
@@ -233,8 +229,9 @@ class Parser:
                 color = color_ln
             elif key == "zone":
                 zone_ln = value.lower()
-                if zone_ln not in ["normal", "blocked", "restricted",
-                                   "priority"]:
+                if zone_ln not in [
+                    "normal", "blocked", "restricted", "priority"
+                        ]:
                     raise ParseError("Metadata Zone not available", line_nb)
                 zone_type = ZoneType(zone_ln)
             elif key == "max_drones":
@@ -270,7 +267,8 @@ class Parser:
         max_link_capacity: int = 1
         data = line.strip().split(":", 1)
         if len(data) < 2:
-            raise ParseError("Connection line missing colon separator", line_nb)
+            raise ParseError(
+                "Connection line missing colon separator", line_nb)
         if data[0].lower().strip() != "connection":
             raise ParseError("Connection wrong tag [connection]", line_nb)
 
@@ -352,7 +350,7 @@ class Parser:
     def _validate_connections(
         self, zones: list[Zone], connections: list[Connection]
     ) -> None:
-        """Validate that all connections reference existing zones with no dupes.
+        """Validate that all connections.
 
         Args:
             zones: List of parsed zones.

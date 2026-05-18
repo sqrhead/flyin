@@ -25,7 +25,6 @@ def main() -> None:
         print(f"{pe}")
         os._exit(0)
 
-
     if graph.nb_drones < 0:
         raise SystemExit("Graph parsing failed — check the error above.")
 

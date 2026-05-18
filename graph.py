@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 
+
 class ZoneType(Enum):
     NORMAL = 'normal'
     BLOCKED = 'blocked'
@@ -21,10 +22,10 @@ class Zone:
             is_start: bool = False,
             is_end: bool = False) -> None:
         self.name: str = name
-        self.x: int  = x
-        self.y: int  = y
+        self.x: int = x
+        self.y: int = y
         self.zone_type: ZoneType = zone_type
-        self.color: Optional[str]  = color
+        self.color: Optional[str] = color
         self.max_drones: int = max_drones
         self.is_start: bool = is_start
         self.is_end: bool = is_end
