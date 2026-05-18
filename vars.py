@@ -1,9 +1,9 @@
+"""Color constants for zone display and drone rendering."""
+
 import arcade
 
-# File to store some values like colors
-
-# todo: add arcade colors dicts
-AVB_COLORS = [
+# Available color names accepted in map file metadata.
+AVB_COLORS: list[str] = [
     "black",
     "blue",
     "brown",
@@ -23,7 +23,8 @@ AVB_COLORS = [
     "yellow",
 ]
 
-ARC_COLORS = {
+# Mapping from color name strings to arcade Color objects.
+ARC_COLORS: dict[str, tuple[int, int, int, int]] = {
     "black": arcade.color.BLACK,
     "blue": arcade.color.BLUEBONNET,
     "brown": arcade.color.BROWN,
@@ -42,3 +43,11 @@ ARC_COLORS = {
     "violet": arcade.color.VIOLET,
     "yellow": arcade.color.YELLOW,
 }
+
+DRN_COLORS: list[tuple[int, int, int, int]] = [
+    arcade.color.CYBER_YELLOW,
+    arcade.color.ARCADE_GREEN,
+    arcade.color.RED_VIOLET,
+    arcade.color.VIOLET_BLUE,
+    arcade.color.GIANTS_ORANGE
+]

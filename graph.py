@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
-
+from typing import Optional
 
 class ZoneType(Enum):
     NORMAL = 'normal'
@@ -12,18 +12,22 @@ class ZoneType(Enum):
 class Zone:
     def __init__(
             self,
-            name,
-            x, y, zone_type=ZoneType.NORMAL,
-            color=None, max_drones=1,
-            is_start=False, is_end=False):
-        self.name = name
-        self.x = x
-        self.y = y
+            name: str,
+            x: int,
+            y: int,
+            zone_type: ZoneType = ZoneType.NORMAL,
+            color: Optional[str] = None,
+            max_drones: int = 1,
+            is_start: bool = False,
+            is_end: bool = False) -> None:
+        self.name: str = name
+        self.x: int  = x
+        self.y: int  = y
         self.zone_type: ZoneType = zone_type
-        self.color = color
-        self.max_drones = max_drones
-        self.is_start = is_start
-        self.is_end = is_end
+        self.color: Optional[str]  = color
+        self.max_drones: int = max_drones
+        self.is_start: bool = is_start
+        self.is_end: bool = is_end
 
 
 @dataclass
@@ -36,7 +40,7 @@ class Connection:
 @dataclass
 class Graph:
     nb_drones: int
-    zones: dict[str, Zone] = field(default_factory=dict)
+    zones: list[Zone] = field(default_factory=list)
     connections: list[Connection] = field(default_factory=list)
 
     def log_graph(self) -> None:
@@ -58,14 +62,19 @@ class Graph:
                 return zone
         raise ValueError("Zone: end not found")
 
-    def get_zone_by_name(self, name: str) -> Zone:
+    def get_zone_by_name(self, name: str) -> Optional[Zone]:
         for zone in self.zones:
             if zone.name == name:
                 return zone
+        return None
 
     def get_current_connections(self, curr_zone: Zone) -> list[Connection]:
-        conns = []
+        conns: list[Connection] = []
         for conn in self.connections:
             if curr_zone.name == conn.zone_a:
                 conns.append(conn)
+            elif curr_zone.name == conn.zone_b:
+                # Return a normalized copy with zone_a = current zone
+                conns.append(Connection(conn.zone_b, conn.zone_a,
+                                        conn.max_link_capacity))
         return conns
