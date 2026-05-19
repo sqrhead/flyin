@@ -42,7 +42,6 @@ class Simulation:
             print("Error: no path found")
             os._exit(1)
 
-
         base_schedule = [
             (node, i) for i, (node, _) in enumerate(base_schedule)
         ]
@@ -60,15 +59,6 @@ class Simulation:
 
             drone.path = schedule
             self.update_table(schedule)
-
-        # self.renderer: Renderer = Renderer(graph=graph, drones=self.drones)
-        # for drone in self.drones:
-        #     schedule = dijkstra.path(graph, self.table)
-        #     if not schedule:
-        #         print(f"Error:infinite loop detected {drone.id} drone")
-        #         os._exit(1)
-        #     drone.path = schedule
-        #     self.update_table(schedule=schedule)
 
         self.renderer: Renderer = Renderer(graph=graph, drones=self.drones)
 
@@ -143,7 +133,6 @@ class Simulation:
 
                 if turn_actions:
                     f.write(" ".join(turn_actions) + "\n")
-
 
     def schedule_with_delay(
         self,

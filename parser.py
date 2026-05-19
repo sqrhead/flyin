@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import os
-from typing import Optional
+from typing import Optional, cast
+
 
 from graph import Connection, Graph, Zone, ZoneType
 from vars import AVB_COLORS
@@ -50,7 +51,7 @@ class Parser:
             return graph
         except ParseError as pe:
             print(f"{pe}")
-            os._exit(1);
+            os._exit(1)
 
     def _process(self, lines: list[str]) -> Graph:
         """Process all lines and build the Graph.
@@ -97,6 +98,8 @@ class Parser:
             else:
                 raise ParseError("ParseError: Line wrong format", line_nb)
 
+        if nb_drones is None:
+            raise ParseError("ParseError: nb_drones not defined", 0)
         self._validate_zones(zones)
         self._validate_connections(zones, connections)
         return Graph(nb_drones, zones, connections)
@@ -122,6 +125,7 @@ class Parser:
         drones = int(parts[1])
         if drones <= 0:
             raise ParseError("Drones must be > 0", line_nb)
+
         return drones
 
     def _process_zone(self, line: str, line_nb: int) -> Zone:
@@ -363,7 +367,9 @@ class Parser:
                     f"Connection loop -> {conn.zone_a} - "
                     f"{conn.zone_b}", 0
                 )
-            pair = tuple(sorted((conn.zone_a, conn.zone_b)))
+            pair = cast(
+                tuple[str, str],
+                tuple(sorted((conn.zone_a, conn.zone_b))))
             if pair in prev_connections:
                 raise ParseError(
                     f"Connection {conn.zone_a} - "

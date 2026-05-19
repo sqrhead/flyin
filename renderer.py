@@ -50,11 +50,13 @@ class Renderer(arcade.Window):
             arcade.color.ORANGE,
         ]
         self.graph: Graph = graph
-        self.zones_info: list[tuple[arcade.Rect, tuple[int, int, int]]] = []
+        self.zones_info: list[
+            tuple[arcade.Rect,
+                  tuple[int, int, int, int]]] = []
         self.conns_info: list[tuple[float, float, float, float]] = []
         self.drones: list[Drone] = drones
         self.turn_timer: float = 0.0
-        self.simulation_speed: int = .8
+        self.simulation_speed: float = .8
         self.current_sim_turn: int = 0
 
         self.text_space: arcade.Text = arcade.Text(
@@ -77,7 +79,11 @@ class Renderer(arcade.Window):
 
         self.pos_map: dict[str, tuple[float, float]] = {}
         for zone in self.graph.zones:
-            clr = ARC_COLORS.get(zone.color, arcade.color.GHOST_WHITE)
+            if isinstance(zone.color, str):
+                clr = ARC_COLORS.get(zone.color, arcade.color.GHOST_WHITE)
+            else:
+                clr = arcade.color.GHOST_WHITE
+
             screen_x = (zone.x - min_x) * scale_x + (WINDOW_WIDTH * 0.1)
             screen_y = (zone.y - min_y) * scale_y + (WINDOW_HEIGHT * 0.1)
 

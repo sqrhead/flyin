@@ -1,0 +1,18 @@
+# Map Configuration: Sample Setup
+nb_drones: 3
+
+# Hub Definitions
+start_hub: base 0 0 [color=green]
+end_hub: target 10 10 [color=yellow]
+
+hub: r1 2 2 [zone=restricted color=red]
+hub: p1 5 5 [zone=priority color=blue max_drones=2]
+hub: n1 8 2 [zone=normal color=white]
+hub: b1 3 8 [zone=blocked color=gray]
+
+# Connection Definitions
+connection: base-r1
+connection: r1-p1 [max_link_capacity=2]
+connection: p1-n1
+connection: n1-target
+connection: base-p1

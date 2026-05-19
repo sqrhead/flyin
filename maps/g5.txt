@@ -1,0 +1,9 @@
+nb_drones: 6
+start_hub: start 0 0 [color=green]
+end_hub: end 10 0 [color=yellow]
+hub: top1 5 5 [zone=normal]
+hub: bot1 5 -5 [zone=normal]
+connection: start-top1
+connection: top1-end
+connection: start-bot1
+connection: bot1-end

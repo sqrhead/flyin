@@ -16,11 +16,19 @@ def main() -> None:
     The map file path can be provided as a command-line argument.
     Defaults to 'maps/critbug.txt' if no argument is given.
     """
-    filepath: str = sys.argv[1] if len(sys.argv) > 1 else "maps/easy/01_linear_path.txt"
+    filepath: str = ""
+    if len(sys.argv) > 1:
+        filepath = sys.argv[1]
+    else:
+        filepath = "maps/easy/01_linear_path.txt"
 
     try:
         parser: Parser = Parser(filepath)
-        graph: Graph = parser.parse()
+        graph: Graph | None = parser.parse()
+        if graph is None:
+            print("Error: Graph is None")
+            os._exit(1)
+
     except ParseError as pe:
         print(f"{pe}")
         os._exit(0)
