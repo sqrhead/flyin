@@ -54,7 +54,7 @@ class Renderer(arcade.Window):
         self.conns_info: list[tuple[float, float, float, float]] = []
         self.drones: list[Drone] = drones
         self.turn_timer: float = 0.0
-        self.simulation_speed: int = 2
+        self.simulation_speed: int = .8
         self.current_sim_turn: int = 0
 
         self.text_space: arcade.Text = arcade.Text(
