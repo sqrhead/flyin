@@ -149,11 +149,6 @@ Press **SPACE** to restart the simulation from turn 0.
 - [PEP 257 - Docstring Conventions](https://peps.python.org/pep-0257/) - Documentation style guide
 - [PEP 484 - Type Hints](https://peps.python.org/pep-0484/) - Type annotation reference
 
-### Project-Specific Documentation
-
-- [42 Network Curriculum](https://42.fr/en/homepage/) - Educational context
-- Project subject PDF (`flyin_updt.pdf`) - Complete specification
-
 ### AI Usage
 
 AI tools were used for the following tasks:
@@ -176,9 +171,6 @@ All core algorithmic logic, pathfinding implementation, parser design, and simul
 ├── vars.py           # Color constants
 ├── Makefile          # Build automation
 ├── README.md         # This file
-└── maps/             # Example map files
-    ├── critbug.txt
-    └── ...
 ```
 
 ## Features
@@ -219,25 +211,7 @@ Performance targets from the project specification:
 - Ultimate challenge with 15 drones: Target ≤ 35 turns
 
 ### Challenger (Optional)
-- The Impossible Dream with 25 drones: Reference record 45 turns
+- The Impossible Dream with 25 drones: Reference record 43 turns
 
 The sequential greedy approach performs well on maps with sufficient capacity and multiple paths, but may struggle on highly constrained maps where global optimization would help.
 
-## Known Limitations
-
-- Sequential planning can be suboptimal compared to global flow optimization
-- No path replanning once committed
-- Renderer performance degrades with very large graphs (100+ zones)
-- Memory usage grows linearly with simulation length
-
-## Future Improvements
-
-- Implement cooperative A* with conflict-based search
-- Add path caching for repeated subproblems
-- Support dynamic obstacle updates
-- Real-time path replanning
-- Performance profiling and optimization for large maps
-
-## License
-
-This project is part of the 42 Network curriculum and follows their academic policies.

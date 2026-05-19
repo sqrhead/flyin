@@ -50,8 +50,6 @@ class Dijkstra:
             if zone is None:
                 continue
 
-            # Option 1: wait in the current zone for one turn.
-            # Start and end zones have no occupancy cap (spec exception).
             current_count = table.get((name, turn + 1), 0)
             capacity_ok = (
                 zone.is_start
@@ -71,7 +69,6 @@ class Dijkstra:
                     ),
                 )
 
-            # Option 2: move to an adjacent zone via a connection.
             for conn in graph.get_current_connections(zone):
                 adj: Zone | None = graph.get_zone_by_name(conn.zone_b)
                 if adj is None:
@@ -83,7 +80,6 @@ class Dijkstra:
                 move_cost = 2 if is_restricted else 1
                 arrival_turn = turn + move_cost
 
-                # Check destination zone capacity (end zone is always open).
                 dest_count = table.get((adj.name, arrival_turn), 0)
                 dest_ok = adj.is_end or dest_count < adj.max_drones
                 if not dest_ok:
@@ -99,12 +95,10 @@ class Dijkstra:
                     continue
 
                 if is_restricted:
-                    # Drone occupies the link entry in the schedule.
                     new_schedule.append((link_id, link_turn))
 
                 new_schedule.append((adj, arrival_turn))
 
-                # Priority zones are preferred: slightly lower weight.
                 weight = (
                     0.9
                     if adj.zone_type == ZoneType.PRIORITY

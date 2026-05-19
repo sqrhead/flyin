@@ -16,7 +16,7 @@ def main() -> None:
     The map file path can be provided as a command-line argument.
     Defaults to 'maps/critbug.txt' if no argument is given.
     """
-    filepath: str = sys.argv[1] if len(sys.argv) > 1 else "maps/imp.txt"
+    filepath: str = sys.argv[1] if len(sys.argv) > 1 else "maps/easy/01_linear_path.txt"
 
     try:
         parser: Parser = Parser(filepath)
@@ -25,12 +25,8 @@ def main() -> None:
         print(f"{pe}")
         os._exit(0)
 
-    if graph.nb_drones < 0:
-        raise SystemExit("Graph parsing failed — check the error above.")
-
     simulation: Simulation = Simulation(graph=graph)
     simulation.simulation_print_output()
-
     try:
         arcade.run()
     finally:

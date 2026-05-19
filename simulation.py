@@ -91,17 +91,14 @@ class Simulation:
                 if step is None:
                     continue
 
-                # Determine what the drone was doing the previous turn.
                 prev_step: Any = next(
                     (item for item, t in drone.path if t == turn - 1),
                     None
                 )
 
-                # Skip the initial placement (turn 0 has no previous step).
                 if prev_step is None:
                     continue
 
-                # Links (strings) always count as active movement.
                 if isinstance(step, str):
                     turn_actions.append(f"{drone.id}-{step}")
                     continue

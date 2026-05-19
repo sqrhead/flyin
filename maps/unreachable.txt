@@ -1,0 +1,13 @@
+nb_drones: 2
+
+start_hub: start 0 0 [color=green]
+end_hub: end 5 0 [color=red]
+
+# A and B are connected to start, but C and end are isolated.
+hub: A 1 0
+hub: B 1 1
+hub: C 4 0
+
+connection: start-A
+connection: start-B
+connection: C-end

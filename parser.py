@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from typing import Optional
 
 from graph import Connection, Graph, Zone, ZoneType
@@ -32,7 +33,7 @@ class Parser:
         """
         self.__filepath: str = filepath
 
-    def parse(self) -> Graph:
+    def parse(self) -> Optional[Graph]:
         """Parse the map file and return a Graph.
 
         Returns:
@@ -49,19 +50,7 @@ class Parser:
             return graph
         except ParseError as pe:
             print(f"{pe}")
-            return Graph(-1, [], [])
-
-    def parse_debug(self) -> None:
-        """Run a quick debug parse of hardcoded example lines."""
-        try:
-            print(self._process_zone("hub: name 1 1 [color=green]", 99))
-            print(
-                self._process_connection(
-                    "connection: name1-name2 [max_link_capacity=10]", 99
-                )
-            )
-        except ParseError as pe:
-            print(f"{pe}")
+            os._exit(1);
 
     def _process(self, lines: list[str]) -> Graph:
         """Process all lines and build the Graph.
