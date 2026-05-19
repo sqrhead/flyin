@@ -37,29 +37,13 @@ class Simulation:
             ]
             self.drones.append(Drone(n, color=chosen_color))
 
-        base_schedule = dijkstra.path(graph, {})
-        if not base_schedule:
-            print("Error: no path found")
-            os._exit(1)
-
-        base_schedule = [
-            (node, i) for i, (node, _) in enumerate(base_schedule)
-        ]
-
-        # Max turns safety
-        max_turns = len(graph.zones) * 2 + graph.nb_drones
         for drone in self.drones:
-            schedule = self.schedule_with_delay(
-                base_schedule, self.table, max_turns
-            )
-
+            schedule = dijkstra.path(graph, self.table)
             if not schedule:
-                print(f"Error: scheduling failed for drone {drone.id}")
+                print(f"Error:infinite loop detected {drone.id} drone")
                 os._exit(1)
-
             drone.path = schedule
-            self.update_table(schedule)
-
+            self.update_table(schedule=schedule)
         self.renderer: Renderer = Renderer(graph=graph, drones=self.drones)
 
     def update_table(self, schedule: list[tuple[Any, int]]) -> None:
@@ -133,33 +117,3 @@ class Simulation:
 
                 if turn_actions:
                     f.write(" ".join(turn_actions) + "\n")
-
-    def schedule_with_delay(
-        self,
-        base_schedule: list[tuple[Any, int]],
-        table: dict[tuple[str, int], int],
-        max_turns: int,
-    ) -> list[tuple[Any, int]] | None:
-
-        delay = 0
-
-        while delay <= max_turns:
-            new_schedule = []
-            conflict = False
-
-            for node, turn in base_schedule:
-                t = turn + delay
-                name = node.name if hasattr(node, "name") else str(node)
-
-                if table.get((name, t), 0) > 0:
-                    conflict = True
-                    break
-
-                new_schedule.append((node, t))
-
-            if not conflict:
-                return new_schedule
-
-            delay += 1
-
-        return None
