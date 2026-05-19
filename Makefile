@@ -5,8 +5,8 @@ MAIN_SCRIPT  := main.py
 ifeq ($(OS),Windows_NT)
     ifneq ($(findstring /,$(SHELL)),)
         VENV_BIN    := $(VENV_DIR)/Scripts
-        VENV_PYTHON := $(VENV_BIN)/python
-        VENV_PIP    := $(VENV_BIN)/pip
+        VENV_PYTHON := $(VENV_BIN)/python.exe
+        VENV_PIP    := $(VENV_BIN)/pip.exe
         RM          := rm -f
         RMDIR       := rm -rf
     else

@@ -118,4 +118,4 @@ class Simulation:
                 if turn_actions:
                     line_out = " ".join(turn_actions)
                     print(line_out)
-                    f.write(" ".join(line_out) + "\n")
+                    f.write(line_out + "\n")

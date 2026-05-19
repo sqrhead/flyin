@@ -20,7 +20,7 @@ def main() -> None:
     if len(sys.argv) > 1:
         filepath = sys.argv[1]
     else:
-        filepath = "maps/easy/01_linear_path.txt"
+        filepath = "maps/challenger/01_the_impossible_dream.txt"
 
     try:
         parser: Parser = Parser(filepath)
