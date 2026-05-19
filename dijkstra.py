@@ -41,7 +41,7 @@ class Dijkstra:
 
             max_turns: int = len(graph.zones) * 2 + graph.nb_drones
             if turn >= max_turns:
-                break
+                continue
 
             if name == end.name:
                 return schedule

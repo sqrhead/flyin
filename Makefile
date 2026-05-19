@@ -24,7 +24,7 @@ else
     RMDIR       := rm -rf
 endif
 
-.PHONY: all install run lint lint-strict clean help
+.PHONY: all install run debug lint lint-strict clean
 
 all: install run
 
@@ -49,6 +49,10 @@ lint-strict: $(VENV_PYTHON)
 	@$(VENV_BIN)/flake8 . --exclude=$(VENV_DIR),dist,build,*.egg-info --exit-zero
 	@echo "Verifying strict type enforcement (mypy --strict)..."
 	@$(VENV_BIN)/mypy . --strict --exclude $(VENV_DIR)
+
+debug: $(VENV_PYTHON)
+	@echo "Launching simulation in debug mode (pdb)..."
+	@$(VENV_PYTHON) -m pdb $(MAIN_SCRIPT)
 
 clean:
 	@rm -rf output.txt

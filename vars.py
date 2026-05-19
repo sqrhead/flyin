@@ -22,7 +22,8 @@ AVB_COLORS: list[str] = [
     "violet",
     "yellow",
     "white",
-    "gray"
+    "gray",
+    "rainbow"
 ]
 
 # Mapping from color name strings to arcade Color objects.
@@ -40,7 +41,7 @@ ARC_COLORS: dict[str, tuple[int, int, int, int]] = {
     "maroon": arcade.color.MAROON,
     "orange": arcade.color.ORANGE,
     "purple": arcade.color.PURPLE,
-    "rainbow": arcade.color.ALLOY_ORANGE,
+    "rainbow": arcade.color.BABY_BLUE_EYES,
     "red": arcade.color.RED,
     "violet": arcade.color.VIOLET,
     "yellow": arcade.color.YELLOW,

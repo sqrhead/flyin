@@ -116,4 +116,6 @@ class Simulation:
                             delivered.add(drone.id)
 
                 if turn_actions:
-                    f.write(" ".join(turn_actions) + "\n")
+                    line_out = " ".join(turn_actions)
+                    print(line_out)
+                    f.write(" ".join(line_out) + "\n")

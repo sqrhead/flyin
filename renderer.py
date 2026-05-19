@@ -124,7 +124,11 @@ class Renderer(arcade.Window):
                 arcade.color.GHOST_WHITE,
                 LINE_WIDTH)
         for zone in self.zones_info:
-            arcade.draw_rect_filled(zone[0], zone[1])
+            if zone[1] == arcade.color.BABY_BLUE_EYES:
+                current_rainbow_color = self.color_drones[self.current_col]
+                arcade.draw_rect_filled(zone[0], current_rainbow_color)
+            else:
+                arcade.draw_rect_filled(zone[0], zone[1])
 
         for drone in self.drones:
             current_step: Any = next(
