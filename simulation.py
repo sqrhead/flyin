@@ -1,5 +1,6 @@
 """Simulation module orchestrating drone pathfinding and output."""
 
+import os
 from typing import Any
 
 from dijkstra import Dijkstra
@@ -36,10 +37,38 @@ class Simulation:
             ]
             self.drones.append(Drone(n, color=chosen_color))
 
+        base_schedule = dijkstra.path(graph, {})
+        if not base_schedule:
+            print("Error: no path found")
+            os._exit(1)
+
+
+        base_schedule = [
+            (node, i) for i, (node, _) in enumerate(base_schedule)
+        ]
+
+        # Max turns safety
+        max_turns = len(graph.zones) * 2 + graph.nb_drones
         for drone in self.drones:
-            schedule = dijkstra.path(graph, self.table)
+            schedule = self.schedule_with_delay(
+                base_schedule, self.table, max_turns
+            )
+
+            if not schedule:
+                print(f"Error: scheduling failed for drone {drone.id}")
+                os._exit(1)
+
             drone.path = schedule
-            self.update_table(schedule=schedule)
+            self.update_table(schedule)
+
+        # self.renderer: Renderer = Renderer(graph=graph, drones=self.drones)
+        # for drone in self.drones:
+        #     schedule = dijkstra.path(graph, self.table)
+        #     if not schedule:
+        #         print(f"Error:infinite loop detected {drone.id} drone")
+        #         os._exit(1)
+        #     drone.path = schedule
+        #     self.update_table(schedule=schedule)
 
         self.renderer: Renderer = Renderer(graph=graph, drones=self.drones)
 
@@ -76,41 +105,72 @@ class Simulation:
         )
 
         delivered: set[str] = set()
+        with open("output.txt", "w") as f:
+            for turn in range(max_turns + 1):
+                turn_actions: list[str] = []
 
-        for turn in range(max_turns + 1):
-            turn_actions: list[str] = []
-
-            for drone in self.drones:
-                if drone.id in delivered:
-                    continue
-
-                step: Any = next(
-                    (item for item, t in drone.path if t == turn),
-                    None
-                )
-                if step is None:
-                    continue
-
-                prev_step: Any = next(
-                    (item for item, t in drone.path if t == turn - 1),
-                    None
-                )
-
-                if prev_step is None:
-                    continue
-
-                if isinstance(step, str):
-                    turn_actions.append(f"{drone.id}-{step}")
-                    continue
-
-                if hasattr(step, "name"):
-                    if (hasattr(prev_step, "name")
-                            and prev_step.name == step.name):
+                for drone in self.drones:
+                    if drone.id in delivered:
                         continue
 
-                    turn_actions.append(f"{drone.id}-{step.name}")
-                    if step.name == end_name:
-                        delivered.add(drone.id)
+                    step: Any = next(
+                        (item for item, t in drone.path if t == turn),
+                        None
+                    )
+                    if step is None:
+                        continue
 
-            if turn_actions:
-                print(" ".join(turn_actions))
+                    prev_step: Any = next(
+                        (item for item, t in drone.path if t == turn - 1),
+                        None
+                    )
+
+                    if prev_step is None:
+                        continue
+
+                    if isinstance(step, str):
+                        turn_actions.append(f"{drone.id}-{step}")
+                        continue
+
+                    if hasattr(step, "name"):
+                        if (hasattr(prev_step, "name")
+                                and prev_step.name == step.name):
+                            continue
+
+                        turn_actions.append(f"{drone.id}-{step.name}")
+                        if step.name == end_name:
+                            delivered.add(drone.id)
+
+                if turn_actions:
+                    f.write(" ".join(turn_actions) + "\n")
+
+
+    def schedule_with_delay(
+        self,
+        base_schedule: list[tuple[Any, int]],
+        table: dict[tuple[str, int], int],
+        max_turns: int,
+    ) -> list[tuple[Any, int]] | None:
+
+        delay = 0
+
+        while delay <= max_turns:
+            new_schedule = []
+            conflict = False
+
+            for node, turn in base_schedule:
+                t = turn + delay
+                name = node.name if hasattr(node, "name") else str(node)
+
+                if table.get((name, t), 0) > 0:
+                    conflict = True
+                    break
+
+                new_schedule.append((node, t))
+
+            if not conflict:
+                return new_schedule
+
+            delay += 1
+
+        return None

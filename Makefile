@@ -51,6 +51,7 @@ lint-strict: $(VENV_PYTHON)
 	@$(VENV_BIN)/mypy . --strict --exclude $(VENV_DIR)
 
 clean:
+	@rm -rf output.txt
 	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	@find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
 	@rm -rf $(VENV_DIR) 2>/dev/null || true

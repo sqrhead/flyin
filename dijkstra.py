@@ -39,6 +39,10 @@ class Dijkstra:
         while pq:
             cost, _, name, turn, schedule = heapq.heappop(pq)
 
+            max_turns: int = len(graph.zones) * 2 + graph.nb_drones
+            if turn >= max_turns:
+                break
+
             if name == end.name:
                 return schedule
 
