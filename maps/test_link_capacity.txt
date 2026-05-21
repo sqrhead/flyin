@@ -1,0 +1,18 @@
+# Link-capacity showcase map
+#
+# The trap: hub "wide" allows 2 drones, but edge a-wide has max_link_capacity=1.
+# Per spec, only ONE drone may traverse a-wide per turn.
+#
+# With zone-only checks, both drones can arrive at "wide" on the SAME turn:
+#   D1-wide and D2-wide on one output line  -> link violation (2 on a 1-capacity edge)
+#
+# Correct behavior: stagger crossings (one waits at "a").
+
+nb_drones: 2
+
+start_hub: a 0 0 [color=green]
+hub: wide 2 0 [color=blue max_drones=2]
+end_hub: goal 4 0 [color=red max_drones=2]
+
+connection: a-wide [max_link_capacity=1]
+connection: wide-goal

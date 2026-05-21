@@ -109,9 +109,6 @@ Drones are routed one at a time, with each subsequent drone planning around the 
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(D × (V + E) log V) where D = number of drones, V = zones, E = connections
-- **Space Complexity:** O(D × V × T) where T = maximum simulation turns
-
 For graphs with multiple disjoint paths, drones naturally distribute across available routes. The algorithm doesn't recalculate paths once committed, which saves computation but may miss optimizations that would be possible with global replanning.
 
 ### Performance Considerations
@@ -155,7 +152,7 @@ AI tools were used for the following tasks:
 - **Documentation & docstrings**: Writing comprehensive docstrings following PEP 257 standards for all classes and functions
 - **Type hints & mypy compliance**: Adding complete type annotations and ensuring the codebase passes strict mypy type checking
 
-All core algorithmic logic, pathfinding implementation, parser design, and simulation architecture were implemented manually. AI was used purely as a documentation aid and type annotation assistant, not for generating algorithmic or business logic code.
+All core algorithmic logic, pathfinding implementation, parser design, and simulation architecture were implemented manually. AI was used purely as a documentation aid and type annotation assistant, not for generating algorithmic or logic code.
 
 ## Project Structure
 

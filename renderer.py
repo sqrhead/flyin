@@ -9,18 +9,13 @@ from graph import Graph
 from vars import ARC_COLORS
 
 # Unused legacy constants kept for reference.
-WINDOW_W = 600
-WINDOW_H = 400
-WINDOW_T = "Fly In"
-BACKGROUND_COLOR = arcade.color.DARK_CHESTNUT
 
-COLOR_GOAL = arcade.color.GREEN
-COLOR_DEADEND = arcade.color.RED
-COLOR_NORMAL = arcade.color.BLUE
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 WINDOW_TITLE = "Fly In"
+
+BACKGROUND_COLOR = arcade.color.DARK_CHESTNUT
 
 ZONE_SIZE = 24
 PADDING = 40
@@ -64,8 +59,9 @@ class Renderer(arcade.Window):
             10, WINDOW_HEIGHT - 20,
             arcade.color.WHITE, 20
         )
+        self.drone_text: arcade.Text = arcade.Text(
+            "", 0, 0, arcade.color.BLACK)
 
-        # Scale zone coordinates to fit the window.
         coords_x = [z.x for z in self.graph.zones]
         coords_y = [z.y for z in self.graph.zones]
         min_x, max_x = min(coords_x), max(coords_x)
@@ -76,6 +72,7 @@ class Renderer(arcade.Window):
 
         scale_x = (WINDOW_WIDTH * 0.8) / range_x
         scale_y = (WINDOW_HEIGHT * 0.6) / range_y
+
 
         self.pos_map: dict[str, tuple[float, float]] = {}
         for zone in self.graph.zones:
@@ -144,7 +141,7 @@ class Renderer(arcade.Window):
             if hasattr(current_step, "name"):
                 if current_step.name in self.pos_map:
                     screen_x, screen_y = self.pos_map[current_step.name]
-                    self.draw_drone(screen_x, screen_y, drone.color)
+                    self.draw_drone(screen_x, screen_y, drone.color, drone.id)
             elif isinstance(current_step, str):
                 # In-transit on a restricted link "ZoneA-ZoneB": draw midpoint.
                 parts = current_step.split("-")
@@ -156,7 +153,7 @@ class Renderer(arcade.Window):
                         p2 = self.pos_map[end_name]
                         mid_x = (p1[0] + p2[0]) / 2
                         mid_y = (p1[1] + p2[1]) / 2
-                        self.draw_drone(mid_x, mid_y, drone.color)
+                        self.draw_drone(mid_x, mid_y, drone.color, drone.id)
 
     def on_update(self, delta_time: float) -> None:
         """Update animation state and advance the simulation turn timer.
@@ -192,7 +189,12 @@ class Renderer(arcade.Window):
 
         super().on_update(delta_time)
 
-    def draw_drone(self, x: float, y: float, color: Any) -> None:
+    def draw_drone(
+            self,
+            x: float,
+            y: float,
+            color: Any,
+            drone_id: str) -> None:
         """Draw a single drone at the given screen coordinates.
 
         Args:
@@ -209,3 +211,8 @@ class Renderer(arcade.Window):
             self.outer_radius,
             color, 6, self.drone_rot, 6)
         arcade.draw_circle_filled(x, y, 5, color)
+        # arcade.draw_text(drone_id, x - 10, y + 24, arcade.color.BLACK)
+        self.drone_text.text = drone_id
+        self.drone_text.x = x - 10
+        self.drone_text.y = y + 24
+        self.drone_text.draw()

@@ -7,7 +7,8 @@ class Drone:
         """Initialize a new Drone.
 
         Args:
-            id: The integer identifier for the drone (converted to 'D1', 'D2', etc.).
+            id: The integer identifier for
+                the drone (converted to 'D1', 'D2', etc.).
             color: The Arcade color constant used for rendering this drone.
         """
         self.id: str = "D" + str(id + 1)

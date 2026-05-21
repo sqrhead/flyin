@@ -7,7 +7,6 @@ from typing import Optional, cast
 
 
 from graph import Connection, Graph, Zone, ZoneType
-from vars import AVB_COLORS
 
 
 class ParseError(Exception):
@@ -67,7 +66,9 @@ class Parser:
         """
         nb_drones: Optional[int] = None
         zones: list[Zone] = []
+        zone_lines: list[int] = []
         connections: list[Connection] = []
+        conn_lines: list[int] = []
 
         for line_nb, raw_line in enumerate(lines, start=1):
             line = raw_line.strip()
@@ -89,19 +90,21 @@ class Parser:
                         "nb_drones not found as first line", line_nb
                     )
                 zones.append(self._process_zone(line, line_nb))
+                zone_lines.append(line_nb)
             elif line.startswith("connection"):
                 if nb_drones is None:
                     raise ParseError(
                         "nb_drones not found as first line", line_nb
                     )
                 connections.append(self._process_connection(line, line_nb))
+                conn_lines.append(line_nb)
             else:
                 raise ParseError("ParseError: Line wrong format", line_nb)
 
         if nb_drones is None:
             raise ParseError("ParseError: nb_drones not defined", 0)
-        self._validate_zones(zones)
-        self._validate_connections(zones, connections)
+        self._validate_zones(zones, zone_lines)
+        self._validate_connections(zones, connections, conn_lines)
         return Graph(nb_drones, zones, connections)
 
     def _process_drones(self, line: str, line_nb: int) -> int:
@@ -217,8 +220,9 @@ class Parser:
 
             if key == "color":
                 color_ln = value.lower()
-                if color_ln not in AVB_COLORS:
-                    raise ParseError("Metadata: Color not available", line_nb)
+                if not color_ln.isalpha():
+                    raise ParseError(
+                        "Metadata: Color is not a single word", line_nb)
                 color = color_ln
             elif key == "zone":
                 zone_ln = value.lower()
@@ -309,7 +313,10 @@ class Parser:
 
         return Connection(zone_a, zone_b, max_link_capacity)
 
-    def _validate_zones(self, zones: list[Zone]) -> None:
+    def _validate_zones(
+            self,
+            zones: list[Zone],
+            zones_lines: list[int]) -> None:
         """Validate that zones list has exactly one start and one end.
 
         Args:
@@ -322,9 +329,10 @@ class Parser:
         end_count: int = 0
         names: list[str] = []
 
-        for zone in zones:
+        for i, zone in enumerate(zones):
+            line_nb = zones_lines[i]
             if zone.name in names:
-                raise ParseError("Zone not unique name", 0)
+                raise ParseError("Zone not unique name", line_nb)
             names.append(zone.name)
             if zone.is_start:
                 start_count += 1
@@ -332,16 +340,19 @@ class Parser:
                 end_count += 1
 
         if start_count == 0:
-            raise ParseError("No start_hub defined", 0)
+            raise ParseError("No start_hub defined", line_nb)
         if start_count > 1:
-            raise ParseError("Multiple start_hub zones defined", 0)
+            raise ParseError("Multiple start_hub zones defined", line_nb)
         if end_count == 0:
-            raise ParseError("No end_hub defined", 0)
+            raise ParseError("No end_hub defined", line_nb)
         if end_count > 1:
-            raise ParseError("Multiple end_hub zones defined", 0)
+            raise ParseError("Multiple end_hub zones defined", line_nb)
 
     def _validate_connections(
-        self, zones: list[Zone], connections: list[Connection]
+        self,
+        zones: list[Zone],
+        connections: list[Connection],
+        conn_lines: list[int]
     ) -> None:
         """Validate that all connections.
 
@@ -356,16 +367,17 @@ class Parser:
         prev_connections: set[tuple[str, str]] = set()
         zone_names = {z.name for z in zones}
 
-        for conn in connections:
+        for i, conn in enumerate(connections):
+            line_nb = conn_lines[i]
             if conn.zone_a not in zone_names or conn.zone_b not in zone_names:
                 raise ParseError(
                     f"Connection links dont exist: {conn.zone_a} - "
-                    f"{conn.zone_b}", 0
+                    f"{conn.zone_b}", line_nb
                 )
             if conn.zone_a == conn.zone_b:
                 raise ParseError(
                     f"Connection loop -> {conn.zone_a} - "
-                    f"{conn.zone_b}", 0
+                    f"{conn.zone_b}", line_nb
                 )
             pair = cast(
                 tuple[str, str],
@@ -373,6 +385,6 @@ class Parser:
             if pair in prev_connections:
                 raise ParseError(
                     f"Connection {conn.zone_a} - "
-                    f"{conn.zone_b} already exists", 0
+                    f"{conn.zone_b} already exists", line_nb
                 )
             prev_connections.add(pair)

@@ -91,7 +91,7 @@ class Dijkstra:
 
                 new_schedule = list(schedule)
 
-                link_id = f"{name}-{adj.name}"
+                link_id = f"{min(name, adj.name)}-{max(name, adj.name)}"
                 link_turn = turn + 1
                 if table.get(
                     (link_id, link_turn), 0
@@ -100,7 +100,6 @@ class Dijkstra:
 
                 if is_restricted:
                     new_schedule.append((link_id, link_turn))
-
                 new_schedule.append((adj, arrival_turn))
 
                 weight = (

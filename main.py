@@ -14,7 +14,7 @@ def main() -> None:
     """Parse the map file, run the simulation, and launch the renderer.
 
     The map file path can be provided as a command-line argument.
-    Defaults to 'maps/critbug.txt' if no argument is given.
+    Defaults to impossible dream if no argument is given.
     """
     filepath: str = ""
     if len(sys.argv) > 1:
@@ -31,7 +31,7 @@ def main() -> None:
 
     except ParseError as pe:
         print(f"{pe}")
-        os._exit(0)
+        os._exit(1)
 
     simulation: Simulation = Simulation(graph=graph)
     simulation.simulation_print_output()

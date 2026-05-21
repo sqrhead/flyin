@@ -1,63 +1,59 @@
-PYTHON       := python3
-VENV_DIR     := .venv
-MAIN_SCRIPT  := main.py
+# Fly-In — Windows (Git Bash / MSYS) + Linux / Debian
+
+MAIN := main.py
+MAP  ?= maps/easy/01_linear_path.txt
+VENV := .venv
+STAMP := $(VENV)/.install-stamp
 
 ifeq ($(OS),Windows_NT)
-    ifneq ($(findstring /,$(SHELL)),)
-        VENV_BIN    := $(VENV_DIR)/Scripts
-        VENV_PYTHON := $(VENV_BIN)/python.exe
-        VENV_PIP    := $(VENV_BIN)/pip.exe
-        RM          := rm -f
-        RMDIR       := rm -rf
-    else
-        VENV_BIN    := $(VENV_DIR)/Scripts
-        VENV_PYTHON := $(VENV_BIN)/python.exe
-        VENV_PIP    := $(VENV_BIN)/pip.exe
-        RM          := del /q /s
-        RMDIR       := rmdir /s /q
-    endif
+    PYTHON  := $(VENV)/Scripts/python.exe
+    FLAKE8  := $(VENV)/Scripts/flake8.exe
+    VENV_PY := python
 else
-    VENV_BIN    := $(VENV_DIR)/bin
-    VENV_PYTHON := $(VENV_BIN)/python
-    VENV_PIP    := $(VENV_BIN)/pip
-    RM          := rm -f
-    RMDIR       := rm -rf
+    PYTHON  := $(VENV)/bin/python
+    FLAKE8  := $(VENV)/bin/flake8
+    VENV_PY := python3
 endif
+
+EXCLUDE := --exclude $(VENV)
+
+MYPY_FLAGS := \
+	--warn-return-any \
+	--warn-unused-ignores \
+	--ignore-missing-imports \
+	--disallow-untyped-defs \
+	--check-untyped-defs
 
 .PHONY: all install run debug lint lint-strict clean
 
-all: install run
+all: run
 
-install: $(VENV_PYTHON)
+$(PYTHON):
+	$(VENV_PY) -m venv $(VENV)
 
-$(VENV_PYTHON):
-	@python -m venv $(VENV_DIR) > /dev/null 2>&1
-	@$(VENV_PYTHON) -m pip install --upgrade pip -q > /dev/null 2>&1
-	@$(VENV_PYTHON) -m pip install --no-cache-dir arcade flake8 mypy -q > /dev/null 2>&1
+# Runs once until you make clean
+install: $(STAMP)
 
-run: $(VENV_PYTHON)
-	@$(VENV_PYTHON) $(MAIN_SCRIPT)
+$(STAMP): $(PYTHON)
+	$(PYTHON) -m pip install -q --no-cache-dir --upgrade pip
+	$(PYTHON) -m pip install -q --no-cache-dir arcade flake8 mypy
+	@touch $(STAMP)
 
-lint: $(VENV_PYTHON)
-	@echo "Checking style guidelines (flake8)..."
-	@$(VENV_BIN)/flake8 . --exclude=$(VENV_DIR),dist,build,*.egg-info --exit-zero
-	@echo "Verifying type-safety constraints (mypy)..."
-	@$(VENV_BIN)/mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs --exclude $(VENV_DIR)
+run: install
+	$(PYTHON) $(MAIN) $(MAP)
 
-lint-strict: $(VENV_PYTHON)
-	@echo "Checking strict styling parameters (flake8)..."
-	@$(VENV_BIN)/flake8 . --exclude=$(VENV_DIR),dist,build,*.egg-info --exit-zero
-	@echo "Verifying strict type enforcement (mypy --strict)..."
-	@$(VENV_BIN)/mypy . --strict --exclude $(VENV_DIR)
+debug: install
+	$(PYTHON) -m pdb $(MAIN) $(MAP)
 
-debug: $(VENV_PYTHON)
-	@echo "Launching simulation in debug mode (pdb)..."
-	@$(VENV_PYTHON) -m pdb $(MAIN_SCRIPT)
+lint: install
+	$(FLAKE8) . $(EXCLUDE)
+	$(PYTHON) -m mypy . $(EXCLUDE) $(MYPY_FLAGS)
+
+lint-strict: install
+	$(FLAKE8) . $(EXCLUDE)
+	$(PYTHON) -m mypy . $(EXCLUDE) --strict
 
 clean:
-	@rm -rf output.txt
-	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-	@find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
-	@rm -rf $(VENV_DIR) 2>/dev/null || true
-	@echo "Workspace clean complete."
-
+	rm -rf $(VENV) output.txt
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name .mypy_cache -exec rm -rf {} + 2>/dev/null || true

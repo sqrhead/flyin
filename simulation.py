@@ -43,7 +43,26 @@ class Simulation:
                 print(f"Error:infinite loop detected {drone.id} drone")
                 os._exit(1)
             drone.path = schedule
-            self.update_table(schedule=schedule)
+            for step, turn in drone.path:
+                if hasattr(step, "name"):
+                    self.table[(step.name, turn)] = self.table.get(
+                        (step.name, turn), 0) + 1
+                else:
+                    self.table[(step, turn)] = self.table.get(
+                        (step, turn), 0) + 1
+
+            for i in range(len(drone.path) - 1):
+                curr_step, curr_turn = drone.path[i]
+                next_step, next_turn = drone.path[i + 1]
+
+                if hasattr(curr_step, "name") and hasattr(next_step, "name"):
+                    if curr_step.name != next_step.name:
+                        link_k = f"{min(curr_step.name, next_step.name)}-"
+                        f"{max(curr_step.name, next_step.name)}"
+                        link_tran_turn = curr_turn + 1
+
+                        self.table[(link_k, link_tran_turn)] = self.table.get(
+                            (link_k, link_tran_turn), 0) + 1
         self.renderer: Renderer = Renderer(graph=graph, drones=self.drones)
 
     def update_table(self, schedule: list[tuple[Any, int]]) -> None:
