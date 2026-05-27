@@ -1,9 +1,0 @@
-nb_drones: 3
-start_hub: base 0 0 [color=green]
-end_hub: target 10 10 [color=yellow]
-hub: p1 5 2 [zone=priority max_drones=1]
-hub: r1 5 8 [zone=restricted]
-connection: base-p1
-connection: p1-target
-connection: base-r1
-connection: r1-target

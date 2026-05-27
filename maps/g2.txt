@@ -1,8 +1,0 @@
-nb_drones: 4
-start_hub: base 0 0 [color=green]
-end_hub: target 10 10 [color=yellow]
-hub: p1 5 5 [zone=normal]
-hub: p2 5 6 [zone=normal]
-connection: base-p1
-connection: p1-p2 [max_link_capacity=1]
-connection: p2-target
