@@ -325,6 +325,8 @@ class Parser:
         Raises:
             ParseError: If names are duplicated, or start/end count != 1.
         """
+        if not zones:
+            raise ParseError("No zones or hubs defined in the map file", 1)
         start_count: int = 0
         end_count: int = 0
         names: list[str] = []

@@ -9,7 +9,7 @@ from graph import Graph
 from parser import ParseError, Parser
 from simulation import Simulation
 
-# Controlla limite di max drones con max link capacity e implimentare direct file input!
+
 def main() -> None:
     """Parse the map file, run the simulation, and launch the renderer.
 

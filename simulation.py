@@ -57,23 +57,15 @@ class Simulation:
 
                 if hasattr(curr_step, "name") and hasattr(next_step, "name"):
                     if curr_step.name != next_step.name:
-                        link_k = f"{min(curr_step.name, next_step.name)}-"
-                        f"{max(curr_step.name, next_step.name)}"
+                        link_k = (
+                            f"{min(curr_step.name, next_step.name)}-"
+                            f"{max(curr_step.name, next_step.name)}"
+                        )
                         link_tran_turn = curr_turn + 1
 
                         self.table[(link_k, link_tran_turn)] = self.table.get(
                             (link_k, link_tran_turn), 0) + 1
         self.renderer: Renderer = Renderer(graph=graph, drones=self.drones)
-
-    def update_table(self, schedule: list[tuple[Any, int]]) -> None:
-        """Register a drone's schedule into the shared occupancy table.
-
-        Args:
-            schedule: List of (zone_or_link_id, turn) pairs.
-        """
-        for res, turn in schedule:
-            name: str = res.name if hasattr(res, "name") else str(res)
-            self.table[(name, turn)] = self.table.get((name, turn), 0) + 1
 
     def simulation_print_output(self) -> None:
         """Print the simulation output in the required format.

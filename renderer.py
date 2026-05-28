@@ -73,7 +73,6 @@ class Renderer(arcade.Window):
         scale_x = (WINDOW_WIDTH * 0.8) / range_x
         scale_y = (WINDOW_HEIGHT * 0.6) / range_y
 
-
         self.pos_map: dict[str, tuple[float, float]] = {}
         for zone in self.graph.zones:
             if isinstance(zone.color, str):
